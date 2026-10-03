@@ -1,0 +1,1214 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="CreateLanding — генератор персонального сайта-каталога проектов GitHub.">
+<title>CreateLanding — генератор</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:#ffffff;
+  --surface:#faf9f8;
+  --surface-2:#f3f2f0;
+  --text:#1f1e1d;
+  --muted:#6b6864;
+  --border:#e8e6e3;
+  --accent:#1766ad;
+  --accent-2:#7c3aed;
+  --soft:#e8f2fc;
+  --ok:#1a7f37;
+  --err:#c0392b;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px -12px rgba(0,0,0,.12);
+  --shadow-hover:0 2px 4px rgba(0,0,0,.05),0 16px 40px -16px rgba(0,0,0,.18);
+  --radius:16px;
+  --content-max:1200px;
+  --content-pad:32px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#141414;
+    --surface:#1c1c1c;
+    --surface-2:#242424;
+    --text:#f5f5f4;
+    --muted:#a8a5a0;
+    --border:#2e2e2c;
+    --accent:#8ab8f0;
+    --accent-2:#b794f6;
+    --soft:#1e2d3d;
+    --ok:#4ade80;
+    --err:#ff7b6b;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.5);
+    --shadow-hover:0 2px 4px rgba(0,0,0,.4),0 16px 40px -16px rgba(0,0,0,.7);
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:0;
+  filter:blur(40px);
+}
+body::before{
+  top:-20vh;right:-15vw;
+  width:70vw;height:70vw;
+  max-width:1100px;max-height:1100px;
+  background:radial-gradient(circle at center,
+    color-mix(in srgb, var(--accent) 24%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 8%, transparent) 40%,
+    transparent 70%);
+  animation:floatA 18s ease-in-out infinite;
+}
+body::after{
+  bottom:-25vh;left:-15vw;
+  width:65vw;height:65vw;
+  max-width:1000px;max-height:1000px;
+  background:radial-gradient(circle at center,
+    color-mix(in srgb, var(--accent-2) 20%, transparent) 0%,
+    color-mix(in srgb, var(--accent-2) 6%, transparent) 40%,
+    transparent 70%);
+  animation:floatB 22s ease-in-out infinite;
+}
+@keyframes floatA{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-3vw,3vh) scale(1.1)}
+}
+@keyframes floatB{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(3vw,-3vh) scale(1.12)}
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid var(--accent);
+  outline-offset:3px;
+  border-radius:6px;
+}
+
+header{
+  position:sticky;top:0;z-index:50;width:100%;
+  border-bottom:1px solid var(--border);
+  background:color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter:saturate(180%) blur(14px);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+}
+.top{
+  max-width:var(--content-max);margin:0 auto;
+  padding:14px var(--content-pad);
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+}
+.brand{
+  font-weight:700;color:var(--text);letter-spacing:-.01em;
+  display:inline-flex;align-items:center;gap:.35em;min-height:44px;
+}
+.brand strong{font-weight:700}
+.brand span{font-weight:600;color:var(--muted)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+
+/* ---------- LANGUAGE SWITCHER ---------- */
+.lang-switch{
+  display:inline-flex;
+  align-items:center;
+  position:relative;
+  height:40px;
+  padding:3px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--surface);
+  user-select:none;
+}
+.lang-switch .lang-thumb{
+  position:absolute;
+  top:3px;left:3px;
+  width:calc(50% - 3px);
+  height:calc(100% - 6px);
+  border-radius:9px;
+  background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent-2) 60%,var(--accent)));
+  box-shadow:0 2px 8px -2px color-mix(in srgb,var(--accent) 60%,transparent);
+  transition:transform .25s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;
+}
+html[data-lang="en"] .lang-switch .lang-thumb{transform:translateX(100%)}
+.lang-switch button{
+  position:relative;
+  z-index:1;
+  appearance:none;
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  font:650 13px/1 system-ui;
+  letter-spacing:.06em;
+  padding:0 14px;
+  height:100%;
+  min-width:52px;
+  cursor:pointer;
+  border-radius:9px;
+  transition:color .2s;
+}
+.lang-switch button:hover{color:var(--text)}
+.lang-switch button[aria-pressed="true"]{color:#fff}
+@media(prefers-color-scheme:dark){
+  .lang-switch button[aria-pressed="true"]{color:#0f0f0f}
+}
+
+main,footer{
+  position:relative;z-index:1;
+  max-width:var(--content-max);margin:0 auto;
+  padding:0 var(--content-pad);
+}
+main{padding-top:8px}
+footer{
+  font-size:14px;color:var(--muted);
+  margin-top:48px;padding-bottom:40px;
+}
+footer p{
+  border-top:1px solid var(--border);
+  padding-top:24px;margin:0;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+
+.hero{
+  position:relative;padding:64px 0 40px;max-width:820px;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--accent);font-size:13px;font-weight:650;
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:6px 12px;background:var(--soft);
+  border-radius:999px;margin-bottom:20px;
+}
+h1{
+  font-size:clamp(34px,5.6vw,56px);
+  line-height:1.08;letter-spacing:-.04em;
+  margin:0 0 20px;font-weight:800;
+}
+h1 span{
+  background:linear-gradient(120deg,var(--accent),var(--accent-2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.intro{font-size:18px;color:var(--muted);max-width:640px;margin:0 0 24px;line-height:1.6}
+.hero-links{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ---------- TUTORIAL ---------- */
+.tutorial{
+  margin-top:32px;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  background:var(--surface);
+  box-shadow:var(--shadow);
+  padding:28px;
+  scroll-margin-top:80px;
+}
+.tutorial h2{
+  margin:0 0 6px;font-size:22px;letter-spacing:-.01em;
+}
+.tutorial .lead{
+  margin:0 0 22px;color:var(--muted);font-size:14.5px;
+}
+.steps{
+  counter-reset:step;
+  list-style:none;
+  margin:0;padding:0;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+}
+.steps li{
+  counter-increment:step;
+  position:relative;
+  padding:18px 18px 18px 56px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:var(--bg);
+  font-size:14.5px;
+  line-height:1.55;
+}
+.steps li::before{
+  content:counter(step);
+  position:absolute;
+  top:16px;left:16px;
+  width:28px;height:28px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--soft);
+  color:var(--accent);
+  font-weight:750;font-size:14px;
+}
+.steps li strong{display:block;margin-bottom:4px;color:var(--text);font-weight:700}
+.steps li code{
+  background:var(--surface-2);
+  padding:2px 6px;border-radius:5px;
+  font-size:12.5px;
+  overflow-wrap:anywhere;
+}
+.callout{
+  margin-top:20px;
+  padding:14px 18px;
+  border-left:3px solid var(--accent);
+  background:var(--soft);
+  border-radius:10px;
+  font-size:14px;
+  line-height:1.55;
+}
+.callout strong{color:var(--text)}
+
+/* ---------- LAYOUT ---------- */
+.layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:24px;
+  margin-top:32px;
+}
+@media(max-width:1000px){
+  .layout{grid-template-columns:1fr}
+}
+.panel{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  background:var(--surface);
+  box-shadow:var(--shadow);
+  padding:24px;
+  min-width:0;
+}
+.panel h2{
+  font-size:18px;letter-spacing:-.01em;
+  margin:0 0 4px;font-weight:700;
+}
+.panel .hint{
+  font-size:13px;color:var(--muted);
+  margin:0 0 20px;line-height:1.5;
+}
+
+.field{margin-bottom:16px}
+.field label{
+  display:block;font-size:13px;font-weight:650;
+  color:var(--text);margin-bottom:6px;
+}
+.field .sub{
+  display:block;font-size:12px;color:var(--muted);
+  font-weight:400;margin-top:4px;line-height:1.4;
+}
+input[type=text],input[type=url],input[type=number],textarea,select{
+  width:100%;min-height:44px;
+  padding:10px 14px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--bg);
+  color:var(--text);
+  font:inherit;
+  transition:border-color .2s,box-shadow .2s,background .2s;
+}
+textarea{min-height:80px;resize:vertical;font-family:inherit}
+input:hover,textarea:hover,select:hover{
+  border-color:color-mix(in srgb,var(--accent) 40%,var(--border));
+}
+input:focus,textarea:focus,select:focus{
+  outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 15%,transparent);
+}
+select{
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6864' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+  background-size:18px;padding-right:40px;cursor:pointer;
+}
+@media(prefers-color-scheme:dark){
+  select{
+    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a8a5a0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+}
+.row{
+  display:flex;gap:10px;flex-wrap:wrap;
+}
+.row > *{flex:1;min-width:140px}
+
+.switch{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 14px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--bg);
+  cursor:pointer;
+  transition:border-color .2s,background .2s;
+  margin-bottom:10px;
+}
+.switch:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--border))}
+.switch input{
+  appearance:none;-webkit-appearance:none;
+  width:42px;height:24px;min-height:0;
+  border-radius:999px;background:var(--surface-2);
+  border:1px solid var(--border);
+  position:relative;cursor:pointer;flex-shrink:0;margin:2px 0 0;
+  transition:background .2s,border-color .2s;
+}
+.switch input::after{
+  content:"";position:absolute;top:2px;left:2px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--muted);transition:transform .2s,background .2s;
+}
+.switch input:checked{background:var(--soft);border-color:var(--accent)}
+.switch input:checked::after{transform:translateX(18px);background:var(--accent)}
+.switch .label{
+  font-size:14px;font-weight:600;color:var(--text);
+  display:block;line-height:1.4;
+}
+.switch .desc{
+  font-size:12.5px;color:var(--muted);
+  display:block;margin-top:2px;line-height:1.45;
+}
+
+.actions{
+  display:flex;gap:10px;flex-wrap:wrap;
+  margin-top:20px;padding-top:20px;
+  border-top:1px solid var(--border);
+}
+.button{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  min-height:44px;padding:9px 16px;
+  border:1px solid var(--border);border-radius:10px;
+  background:var(--bg);
+  font:600 14px/1.4 system-ui;color:var(--text);
+  cursor:pointer;white-space:nowrap;text-decoration:none;
+  transition:border-color .2s,background .2s,color .2s,transform .15s,box-shadow .2s;
+}
+.button:hover{
+  border-color:var(--accent);color:var(--accent);
+  text-decoration:none;transform:translateY(-1px);
+  box-shadow:0 4px 12px -4px color-mix(in srgb,var(--accent) 40%,transparent);
+}
+.button:active{transform:translateY(0) scale(.98)}
+.button:disabled{opacity:.55;cursor:wait;transform:none;box-shadow:none}
+.button svg{width:15px;height:15px;flex-shrink:0}
+.primary{
+  background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent-2) 60%,var(--accent)));
+  border-color:transparent;color:#fff;
+  box-shadow:0 4px 14px -4px color-mix(in srgb,var(--accent) 60%,transparent);
+}
+.primary:hover{
+  color:#fff;border-color:transparent;
+  box-shadow:0 6px 20px -4px color-mix(in srgb,var(--accent) 70%,transparent);
+}
+@media(prefers-color-scheme:dark){
+  .primary{color:#0f0f0f}
+  .primary:hover{color:#0f0f0f}
+}
+
+.status{
+  margin-top:12px;font-size:13.5px;
+  display:flex;align-items:center;gap:8px;
+}
+.status.ok{color:var(--ok)}
+.status.err{color:var(--err)}
+
+.preview{
+  display:flex;flex-direction:column;
+  padding:0;overflow:hidden;
+}
+.preview-head{
+  padding:20px 24px;
+  border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+.preview-head h2{margin:0}
+.preview-head .badge{
+  font-size:11.5px;font-weight:650;
+  text-transform:uppercase;letter-spacing:.06em;
+  color:var(--accent);background:var(--soft);
+  padding:4px 10px;border-radius:999px;
+}
+.preview-frame{
+  flex:1;background:var(--surface-2);
+  padding:16px;min-height:520px;
+}
+.preview-frame iframe{
+  width:100%;height:100%;min-height:520px;
+  border:1px solid var(--border);
+  border-radius:12px;background:var(--bg);
+}
+
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+.hidden{display:none !important}
+
+@media(max-width:720px){
+  :root{--content-pad:20px}
+  .top{padding:12px var(--content-pad);gap:8px}
+  .hero{padding:40px 0 28px}
+  h1{font-size:clamp(30px,9vw,40px)}
+  .panel{padding:20px}
+  .brand span{display:none}
+  .lang-switch button{min-width:44px;padding:0 10px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+  body::before,body::after{animation:none}
+}
+</style>
+</head>
+<body>
+<header>
+  <nav class="top" aria-label="Главная навигация">
+    <a class="brand" href="./"><strong>CreateLanding</strong><span data-i18n="brand.tag">генератор</span></a>
+    <div class="nav-actions">
+      <div class="lang-switch" role="group" aria-label="Language / Язык">
+        <span class="lang-thumb" aria-hidden="true"></span>
+        <button type="button" data-lang="ru" aria-pressed="true" aria-label="Русский язык">RU</button>
+        <button type="button" data-lang="en" aria-pressed="false" aria-label="English language">EN</button>
+      </div>
+      <a class="button" href="https://github.com/notkovvik/CreateLanding" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1.1 1.9 2.9 1.3 3.6 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"></path></svg>
+        GitHub ↗
+      </a>
+    </div>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <div class="eyebrow" data-i18n="hero.eyebrow">Конструктор</div>
+    <h1 data-i18n-html="hero.title">Сайт-каталог<br>ваших <span>проектов</span></h1>
+    <p class="intro" data-i18n="hero.intro">Введите логин GitHub, настройте опции и скачайте готовый index.html. Положите его в репозиторий &lt;логин&gt;.github.io — сайт откроется по адресу https://&lt;логин&gt;.github.io/.</p>
+    <div class="hero-links">
+      <a class="button primary" href="#tutorial" data-i18n="hero.cta">Как развернуть ↓</a>
+      <a class="button" href="#settings" data-i18n="hero.cta2">Настроить ↓</a>
+    </div>
+  </section>
+
+  <!-- ТУТОРИАЛ -->
+  <section class="tutorial" id="tutorial" aria-label="Инструкция">
+    <h2 data-i18n="tut.title">Как развернуть за 5 шагов</h2>
+    <p class="lead" data-i18n="tut.lead">Ничего устанавливать не нужно. Только браузер, аккаунт GitHub и 5 минут времени.</p>
+    <ol class="steps">
+      <li>
+        <strong data-i18n="tut.s1.t">Сгенерируйте файл</strong>
+        <span data-i18n="tut.s1.d">Заполните форму ниже, нажмите «Скачать index.html». Файл сохранится на компьютере.</span>
+      </li>
+      <li>
+        <strong data-i18n="tut.s2.t">Создайте репозиторий</strong>
+        <span data-i18n="tut.s2.d">На GitHub создайте публичный репозиторий с именем &lt;ваш-логин&gt;.github.io. Например, для octocat это octocat.github.io.</span>
+      </li>
+      <li>
+        <strong data-i18n="tut.s3.t">Загрузите файл</strong>
+        <span data-i18n="tut.s3.d">В пустом репозитории нажмите «creating a new file», назовите его index.html и вставьте содержимое скачанного файла. Commit changes.</span>
+      </li>
+      <li>
+        <strong data-i18n="tut.s4.t">Включите Pages</strong>
+        <span data-i18n="tut.s4.d">Settings → Pages. Source: Deploy from a branch. Branch: main, папка / (root). Save.</span>
+      </li>
+      <li>
+        <strong data-i18n="tut.s5.t">Откройте сайт</strong>
+        <span data-i18n="tut.s5.d">Через 1–3 минуты сайт заработает по адресу https://&lt;ваш-логин&gt;.github.io/</span>
+      </li>
+    </ol>
+    <div class="callout" data-i18n-html="tut.callout">
+      <strong>Важно:</strong> репозиторий должен называться именно <code>&lt;логин&gt;.github.io</code>, иначе сайт откроется по адресу <code>&lt;логин&gt;.github.io/&lt;имя-репозитория&gt;/</code>.
+    </div>
+  </section>
+
+  <div class="layout" id="settings">
+    <!-- НАСТРОЙКИ -->
+    <section class="panel" aria-label="Настройки генератора">
+      <h2 data-i18n="set.title">Настройки</h2>
+      <p class="hint" data-i18n="set.hint">Все поля можно менять — превью справа обновится автоматически.</p>
+
+      <div class="field">
+        <label for="f-user" data-i18n="set.user">Логин GitHub</label>
+        <input id="f-user" type="text" value="octocat" autocomplete="off" spellcheck="false">
+        <span class="sub" data-i18n-html="set.user.sub">Без @ и без ссылки. Например: <code>octocat</code>.</span>
+      </div>
+
+      <div class="field">
+        <label for="f-title" data-i18n="set.siteTitle">Название сайта</label>
+        <input id="f-title" type="text" value="Проекты" autocomplete="off">
+        <span class="sub" data-i18n="set.siteTitle.sub">Заголовок в hero-секции. Логин подсветится градиентом.</span>
+      </div>
+
+      <div class="field">
+        <label for="f-desc" data-i18n="set.desc">Описание</label>
+        <textarea id="f-desc">Откройте сайт проекта, загляните в код или скачайте исходники и файлы релизов — всё собрано на одной странице.</textarea>
+      </div>
+
+      <div class="field">
+        <label for="f-cache" data-i18n="set.cache">Кеш API, минут</label>
+        <input id="f-cache" type="number" min="0" max="1440" value="10">
+        <span class="sub" data-i18n="set.cache.sub">0 — без кеша. Больше — меньше запросов к GitHub.</span>
+      </div>
+
+      <h3 style="font-size:14px;margin:24px 0 10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:650" data-i18n="set.blocks">Блоки</h3>
+
+      <label class="switch"><input type="checkbox" id="f-stats" checked><span><span class="label" data-i18n="set.stats">Статистика</span><span class="desc" data-i18n="set.stats.desc">Проекты, звёзды, языки.</span></span></label>
+      <label class="switch"><input type="checkbox" id="f-sort" checked><span><span class="label" data-i18n="set.sort">Сортировка</span><span class="desc" data-i18n="set.sort.desc">По обновлению, дате, алфавиту.</span></span></label>
+      <label class="switch"><input type="checkbox" id="f-download" checked><span><span class="label" data-i18n="set.download">Кнопка «Скачать код»</span><span class="desc" data-i18n="set.download.desc">Скачивание ZIP-архива ветки.</span></span></label>
+      <label class="switch"><input type="checkbox" id="f-releases" checked><span><span class="label" data-i18n="set.releases">Файлы релизов</span><span class="desc" data-i18n="set.releases.desc">Список ассетов последнего релиза.</span></span></label>
+      <label class="switch"><input type="checkbox" id="f-debug" checked><span><span class="label" data-i18n="set.debug">Панель диагностики</span><span class="desc" data-i18n="set.debug.desc">Поле для токена и отладочная информация.</span></span></label>
+
+      <h3 style="font-size:14px;margin:24px 0 10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:650" data-i18n="set.season">Сезонные темы</h3>
+
+      <label class="switch"><input type="checkbox" id="f-halloween" checked><span><span class="label" data-i18n="set.halloween">Хэллоуин</span><span class="desc" data-i18n="set.halloween.desc">Автовключение 3.10.2026 — 1.11.2026.</span></span></label>
+      <label class="switch"><input type="checkbox" id="f-winter" checked><span><span class="label" data-i18n="set.winter">Зима</span><span class="desc" data-i18n="set.winter.desc">Автовключение 1.12.2026 — 1.02.2027.</span></span></label>
+
+      <div class="actions">
+        <button class="button primary" id="btn-download" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>
+          <span data-i18n="btn.download">Скачать index.html</span>
+        </button>
+        <button class="button" id="btn-copy" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span data-i18n="btn.copy">Скопировать код</span>
+        </button>
+        <button class="button" id="btn-reset" type="button" data-i18n="btn.reset">Сбросить</button>
+      </div>
+      <div class="status" id="status" aria-live="polite"></div>
+    </section>
+
+    <!-- ПРЕВЬЮ -->
+    <section class="panel preview" aria-label="Предпросмотр">
+      <div class="preview-head">
+        <h2 data-i18n="prev.title">Предпросмотр</h2>
+        <span class="badge">live</span>
+      </div>
+      <div class="preview-frame">
+        <iframe id="preview" title="Предпросмотр сайта" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+    </section>
+  </div>
+</main>
+<footer>
+  <p data-i18n="footer.text">CreateLanding · Генератор статических сайтов-каталогов GitHub. Данные не покидают браузер.</p>
+</footer>
+
+<script>
+'use strict';
+
+/* ============ I18N ============ */
+const I18N = {
+  ru: {
+    'brand.tag': 'генератор',
+    'hero.eyebrow': 'Конструктор',
+    'hero.title': 'Сайт-каталог<br>ваших <span>проектов</span>',
+    'hero.intro': 'Введите логин GitHub, настройте опции и скачайте готовый index.html. Положите его в репозиторий &lt;логин&gt;.github.io — сайт откроется по адресу https://&lt;логин&gt;.github.io/.',
+    'hero.cta': 'Как развернуть ↓',
+    'hero.cta2': 'Настроить ↓',
+    'tut.title': 'Как развернуть за 5 шагов',
+    'tut.lead': 'Ничего устанавливать не нужно. Только браузер, аккаунт GitHub и 5 минут времени.',
+    'tut.s1.t': 'Сгенерируйте файл',
+    'tut.s1.d': 'Заполните форму ниже, нажмите «Скачать index.html». Файл сохранится на компьютере.',
+    'tut.s2.t': 'Создайте репозиторий',
+    'tut.s2.d': 'На GitHub создайте публичный репозиторий с именем &lt;ваш-логин&gt;.github.io. Например, для octocat это octocat.github.io.',
+    'tut.s3.t': 'Загрузите файл',
+    'tut.s3.d': 'В пустом репозитории нажмите «creating a new file», назовите его index.html и вставьте содержимое скачанного файла. Commit changes.',
+    'tut.s4.t': 'Включите Pages',
+    'tut.s4.d': 'Settings → Pages. Source: Deploy from a branch. Branch: main, папка / (root). Save.',
+    'tut.s5.t': 'Откройте сайт',
+    'tut.s5.d': 'Через 1–3 минуты сайт заработает по адресу https://&lt;ваш-логин&gt;.github.io/',
+    'tut.callout': '<strong>Важно:</strong> репозиторий должен называться именно <code>&lt;логин&gt;.github.io</code>, иначе сайт откроется по адресу <code>&lt;логин&gt;.github.io/&lt;имя-репозитория&gt;/</code>.',
+    'set.title': 'Настройки',
+    'set.hint': 'Все поля можно менять — превью справа обновится автоматически.',
+    'set.user': 'Логин GitHub',
+    'set.user.sub': 'Без @ и без ссылки. Например: <code>octocat</code>.',
+    'set.siteTitle': 'Название сайта',
+    'set.siteTitle.sub': 'Заголовок в hero-секции. Логин подсветится градиентом.',
+    'set.desc': 'Описание',
+    'set.cache': 'Кеш API, минут',
+    'set.cache.sub': '0 — без кеша. Больше — меньше запросов к GitHub.',
+    'set.blocks': 'Блоки',
+    'set.stats': 'Статистика',
+    'set.stats.desc': 'Проекты, звёзды, языки.',
+    'set.sort': 'Сортировка',
+    'set.sort.desc': 'По обновлению, дате, алфавиту.',
+    'set.download': 'Кнопка «Скачать код»',
+    'set.download.desc': 'Скачивание ZIP-архива ветки.',
+    'set.releases': 'Файлы релизов',
+    'set.releases.desc': 'Список ассетов последнего релиза.',
+    'set.debug': 'Панель диагностики',
+    'set.debug.desc': 'Поле для токена и отладочная информация.',
+    'set.season': 'Сезонные темы',
+    'set.halloween': 'Хэллоуин',
+    'set.halloween.desc': 'Автовключение 3.10.2026 — 1.11.2026.',
+    'set.winter': 'Зима',
+    'set.winter.desc': 'Автовключение 1.12.2026 — 1.02.2027.',
+    'btn.download': 'Скачать index.html',
+    'btn.copy': 'Скопировать код',
+    'btn.reset': 'Сбросить',
+    'prev.title': 'Предпросмотр',
+    'footer.text': 'CreateLanding · Генератор статических сайтов-каталогов GitHub. Данные не покидают браузер.',
+    'status.copied': '✓ Код скопирован в буфер обмена',
+    'status.copyErr': 'Не удалось скопировать. Выделите код вручную.',
+    'status.reset': 'Настройки сброшены',
+    'doc.title': 'CreateLanding — генератор',
+    'doc.desc': 'CreateLanding — генератор персонального сайта-каталога проектов GitHub.'
+  },
+  en: {
+    'brand.tag': 'generator',
+    'hero.eyebrow': 'Builder',
+    'hero.title': 'A catalog site<br>for your <span>projects</span>',
+    'hero.intro': 'Enter your GitHub username, tweak the options and download the ready index.html. Drop it into a <username>.github.io repository — the site opens at https://<username>.github.io/.',
+    'hero.cta': 'How to deploy ↓',
+    'hero.cta2': 'Configure ↓',
+    'tut.title': 'Deploy in 5 steps',
+    'tut.lead': 'Nothing to install. Just a browser, a GitHub account and 5 minutes.',
+    'tut.s1.t': 'Generate the file',
+    'tut.s1.d': 'Fill in the form below and click “Download index.html”. The file saves to your computer.',
+    'tut.s2.t': 'Create a repository',
+    'tut.s2.d': 'On GitHub create a public repository named <your-username>.github.io. For octocat that is octocat.github.io.',
+    'tut.s3.t': 'Upload the file',
+    'tut.s3.d': 'In the empty repository click “creating a new file”, name it index.html and paste the contents. Commit changes.',
+    'tut.s4.t': 'Enable Pages',
+    'tut.s4.d': 'Settings → Pages. Source: Deploy from a branch. Branch: main, folder / (root). Save.',
+    'tut.s5.t': 'Open the site',
+    'tut.s5.d': 'In 1–3 minutes the site is live at https://<your-username>.github.io/',
+    'tut.callout': '<strong>Important:</strong> the repository must be named exactly <code>&lt;username&gt;.github.io</code>, otherwise the site opens at <code>&lt;username&gt;.github.io/&lt;repo-name&gt;/</code>.',
+    'set.title': 'Settings',
+    'set.hint': 'Every field is live — the preview on the right updates automatically.',
+    'set.user': 'GitHub username',
+    'set.user.sub': 'Without @ and without the link. For example: <code>octocat</code>.',
+    'set.siteTitle': 'Site title',
+    'set.siteTitle.sub': 'Heading in the hero section. The username is highlighted with a gradient.',
+    'set.desc': 'Description',
+    'set.cache': 'API cache, minutes',
+    'set.cache.sub': '0 — no cache. Higher — fewer requests to GitHub.',
+    'set.blocks': 'Blocks',
+    'set.stats': 'Stats',
+    'set.stats.desc': 'Projects, stars, languages.',
+    'set.sort': 'Sorting',
+    'set.sort.desc': 'By update, date, alphabet.',
+    'set.download': '“Download code” button',
+    'set.download.desc': 'Download the branch ZIP archive.',
+    'set.releases': 'Release files',
+    'set.releases.desc': 'List of the latest release assets.',
+    'set.debug': 'Diagnostics panel',
+    'set.debug.desc': 'Token field and debug info.',
+    'set.season': 'Seasonal themes',
+    'set.halloween': 'Halloween',
+    'set.halloween.desc': 'Auto-enabled Oct 3 — Nov 1, 2026.',
+    'set.winter': 'Winter',
+    'set.winter.desc': 'Auto-enabled Dec 1, 2026 — Feb 1, 2027.',
+    'btn.download': 'Download index.html',
+    'btn.copy': 'Copy code',
+    'btn.reset': 'Reset',
+    'prev.title': 'Preview',
+    'footer.text': 'CreateLanding · Static catalog generator for GitHub. Data never leaves your browser.',
+    'status.copied': '✓ Code copied to clipboard',
+    'status.copyErr': 'Could not copy. Select the code manually.',
+    'status.reset': 'Settings reset',
+    'doc.title': 'CreateLanding — generator',
+    'doc.desc': 'CreateLanding — a generator of personal GitHub project catalog sites.'
+  }
+};
+
+let currentLang = 'ru';
+
+function applyLang(lang){
+  currentLang = I18N[lang] ? lang : 'ru';
+  const dict = I18N[currentLang];
+  document.documentElement.lang = currentLang;
+  document.documentElement.setAttribute('data-lang', currentLang);
+
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    if(dict[key] !== undefined) el.textContent = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-html');
+    if(dict[key] !== undefined) el.innerHTML = dict[key];
+  });
+
+  document.title = dict['doc.title'];
+  const meta = document.querySelector('meta[name="description"]');
+  if(meta) meta.setAttribute('content', dict['doc.desc']);
+
+  document.querySelectorAll('.lang-switch button').forEach(btn=>{
+    const on = btn.dataset.lang === currentLang;
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+
+  try{ localStorage.setItem('cl-lang', currentLang); }catch{}
+  // Обновляем предпросмотр, чтобы он тоже был на нужном языке
+  rebuildPreview();
+}
+
+(function initLang(){
+  let saved = null;
+  try{ saved = localStorage.getItem('cl-lang'); }catch{}
+  if(!saved){
+    saved = (navigator.language || 'ru').toLowerCase().startsWith('ru') ? 'ru' : 'en';
+  }
+  currentLang = saved;
+})();
+
+/* ============ ЭЛЕМЕНТЫ ============ */
+const fields = {
+  user:       document.querySelector('#f-user'),
+  title:      document.querySelector('#f-title'),
+  desc:       document.querySelector('#f-desc'),
+  cache:      document.querySelector('#f-cache'),
+  stats:      document.querySelector('#f-stats'),
+  sort:       document.querySelector('#f-sort'),
+  download:   document.querySelector('#f-download'),
+  releases:   document.querySelector('#f-releases'),
+  debug:      document.querySelector('#f-debug'),
+  halloween:  document.querySelector('#f-halloween'),
+  winter:     document.querySelector('#f-winter')
+};
+const preview   = document.querySelector('#preview');
+const statusBox = document.querySelector('#status');
+const btnDownload = document.querySelector('#btn-download');
+const btnCopy     = document.querySelector('#btn-copy');
+const btnReset    = document.querySelector('#btn-reset');
+
+/* ============ УТИЛИТЫ ============ */
+function escapeJs(str){
+  return String(str).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n').replace(/\r/g,'');
+}
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function safeUser(str){
+  return String(str).trim().replace(/^@/,'').replace(/[^A-Za-z0-9-]/g,'');
+}
+function setStatus(msg, ok){
+  statusBox.textContent = msg;
+  statusBox.className = 'status ' + (ok ? 'ok' : 'err');
+}
+
+/* ============ ГЕНЕРАЦИЯ ============ */
+function buildHtml(){
+  const user = safeUser(fields.user.value) || 'octocat';
+  const title = fields.title.value.trim() || (currentLang === 'en' ? 'Projects' : 'Проекты');
+  const desc  = fields.desc.value.trim() || (currentLang === 'en'
+    ? 'Open the project site, browse the code or download sources and release files — all in one place.'
+    : 'Откройте сайт проекта, загляните в код или скачайте исходники и файлы релизов — всё собрано на одной странице.');
+  const cacheMin = Math.max(0, Math.min(1440, Number(fields.cache.value) || 0));
+  const cacheMs  = cacheMin * 60 * 1000;
+
+  const showStats    = fields.stats.checked;
+  const showSort     = fields.sort.checked;
+  const showDownload = fields.download.checked;
+  const showReleases = fields.releases.checked;
+  const showDebug    = fields.debug.checked;
+  const enableHalloween = fields.halloween.checked;
+  const enableWinter    = fields.winter.checked;
+
+  const titleEsc = escapeHtml(title);
+  const descEsc  = escapeHtml(desc);
+  const userEsc  = escapeHtml(user);
+
+  return `<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="${descEsc}">
+<title>${titleEsc} — ${userEsc}</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:#ffffff;--surface:#faf9f8;--surface-2:#f3f2f0;
+  --text:#1f1e1d;--muted:#6b6864;--border:#e8e6e3;
+  --accent:#1766ad;--accent-2:#7c3aed;--soft:#e8f2fc;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px -12px rgba(0,0,0,.12);
+  --shadow-hover:0 2px 4px rgba(0,0,0,.05),0 16px 40px -16px rgba(0,0,0,.18);
+  --radius:16px;--content-max:1160px;--content-pad:32px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#141414;--surface:#1c1c1c;--surface-2:#242424;
+  --text:#f5f5f4;--muted:#a8a5a0;--border:#2e2e2c;
+  --accent:#8ab8f0;--accent-2:#b794f6;--soft:#1e2d3d;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.5);
+  --shadow-hover:0 2px 4px rgba(0,0,0,.4),0 16px 40px -16px rgba(0,0,0,.7);
+}}
+html.halloween{--bg:#fff8ee;--surface:#fffaf2;--surface-2:#fdeedd;--text:#2a1a0a;--muted:#7a5a3a;--border:#f0ddc4;--accent:#d2691e;--accent-2:#6b2d8f;--soft:#fde6cf}
+@media(prefers-color-scheme:dark){html.halloween{--bg:#130a1c;--surface:#1b1026;--surface-2:#241432;--text:#f6ecff;--muted:#b39ccb;--border:#33204a;--accent:#ff9a3c;--accent-2:#c58bff;--soft:#2a1440}}
+html.winter{--bg:#f2f8ff;--surface:#ffffff;--surface-2:#e6f0fb;--text:#0f1b2d;--muted:#5a6b82;--border:#d6e4f5;--accent:#1e6fd9;--accent-2:#7c4dff;--soft:#dceafb}
+@media(prefers-color-scheme:dark){html.winter{--bg:#0a1220;--surface:#101a2e;--surface-2:#16233c;--text:#e8f1ff;--muted:#9db1cc;--border:#243555;--accent:#7cb8ff;--accent-2:#b39cff;--soft:#152540}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden;transition:background .4s ease,color .4s ease}
+body::before,body::after{content:"";position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(40px);transition:background .4s ease}
+body::before{top:-20vh;right:-15vw;width:70vw;height:70vw;max-width:1100px;max-height:1100px;background:radial-gradient(circle at center,color-mix(in srgb,var(--accent) 26%,transparent) 0%,color-mix(in srgb,var(--accent) 10%,transparent) 40%,transparent 70%);animation:floatA 18s ease-in-out infinite}
+body::after{bottom:-25vh;left:-15vw;width:65vw;height:65vw;max-width:1000px;max-height:1000px;background:radial-gradient(circle at center,color-mix(in srgb,var(--accent-2) 22%,transparent) 0%,color-mix(in srgb,var(--accent-2) 8%,transparent) 40%,transparent 70%);animation:floatB 22s ease-in-out infinite}
+@keyframes floatA{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-3vw,3vh) scale(1.1)}}
+@keyframes floatB{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(3vw,-3vh) scale(1.12)}}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+header{position:sticky;top:0;z-index:50;width:100%;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px)}
+.top{max-width:var(--content-max);margin:0 auto;padding:14px var(--content-pad);display:flex;justify-content:space-between;align-items:center;gap:16px}
+.brand{font-weight:700;color:var(--text);display:inline-flex;align-items:center;gap:.35em;min-height:44px}
+.brand span{font-weight:600;color:var(--muted)}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:9px 14px;border:1px solid var(--border);border-radius:10px;background:var(--bg);font:600 14px/1.4 system-ui;color:var(--text);cursor:pointer;white-space:nowrap;transition:all .2s;text-decoration:none}
+.button:hover{border-color:var(--accent);color:var(--accent);text-decoration:none;transform:translateY(-1px)}
+.button svg{width:15px;height:15px}
+main,footer{position:relative;z-index:1;max-width:var(--content-max);margin:0 auto;padding:0 var(--content-pad)}
+footer{font-size:14px;color:var(--muted);margin-top:48px;padding-bottom:40px}
+footer p{border-top:1px solid var(--border);padding-top:24px;margin:0}
+.hero{padding:72px 0 56px;max-width:820px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font-size:13px;font-weight:650;letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;background:var(--soft);border-radius:999px;margin-bottom:20px}
+.eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s ease-in-out infinite}
+html.halloween .eyebrow::before{content:"🎃";width:auto;height:auto;background:transparent;font-size:14px}
+html.winter .eyebrow::before{content:"❄";width:auto;height:auto;background:transparent;font-size:14px}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+h1{font-size:clamp(38px,6.4vw,68px);line-height:1.05;letter-spacing:-.045em;margin:0 0 24px;font-weight:800}
+h1 span{background:linear-gradient(120deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.intro{font-size:19px;color:var(--muted);max-width:620px;margin:0 0 32px;line-height:1.6}
+.stats{display:flex;flex-wrap:wrap;gap:12px}
+.stat{display:flex;flex-direction:column;gap:2px;padding:14px 20px;background:var(--surface);border:1px solid var(--border);border-radius:14px;min-width:120px;box-shadow:var(--shadow)}
+.stat-value{font-size:22px;font-weight:750;letter-spacing:-.02em}
+.stat-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.controls{display:flex;gap:12px;align-items:center;margin-bottom:28px;flex-wrap:wrap}
+.search{flex:1;min-width:240px;position:relative}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted)}
+input[type=search],select{width:100%;min-height:50px;padding:12px 16px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font:inherit}
+.search input{padding-left:44px}
+input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 15%,transparent)}
+select{min-width:200px;width:auto;cursor:pointer}
+.count{color:var(--muted);font-size:14px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;white-space:nowrap;margin-left:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}
+.card{position:relative;border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;background:var(--surface);box-shadow:var(--shadow);transition:transform .22s,box-shadow .22s;animation:fadeUp .45s ease backwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover);border-color:color-mix(in srgb,var(--accent) 30%,var(--border))}
+.card h2{font-size:22px;line-height:1.3;letter-spacing:-.02em;margin:0 0 10px;overflow-wrap:anywhere}
+.description{color:var(--muted);margin:0 0 16px;font-size:15px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.dates{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:0 0 16px;padding-bottom:14px;border-bottom:1px dashed var(--border)}
+.dates span{display:inline-flex;align-items:center;gap:5px}
+.dates svg{width:13px;height:13px;opacity:.7}
+.meta{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-top:auto;margin-bottom:20px}
+.meta span{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:var(--surface-2);border-radius:999px;font-weight:550}
+.lang-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.primary{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent-2) 60%,var(--accent)));border-color:transparent;color:#fff}
+@media(prefers-color-scheme:dark){.primary{color:#0f0f0f}}
+.release-area{font-size:14px;margin-top:16px;padding-top:16px;border-top:1px dashed var(--border)}
+.release-area:empty{display:none}
+.release-area a{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;background:var(--surface-2);margin-top:8px;font-weight:550}
+.release-area a:hover{background:var(--soft);text-decoration:none}
+.release-area > div:first-child{font-weight:650;margin-bottom:6px}
+.notice{padding:40px 32px;border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);text-align:center;background:var(--surface);box-shadow:var(--shadow)}
+.notice h2{color:var(--text);margin-top:0}
+.skeleton-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}
+.skeleton-card{height:240px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.skeleton-card::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--text) 6%,transparent),transparent);transform:translateX(-100%);animation:shimmer 1.5s infinite}
+@keyframes shimmer{100%{transform:translateX(100%)}}
+.skeleton-line{height:14px;border-radius:6px;background:var(--surface-2)}
+.skeleton-line.title{height:22px;width:55%}
+.skeleton-line.text{width:90%}
+.skeleton-line.text-2{width:70%}
+.skeleton-line.meta{width:40%;margin-top:auto}
+.debug{margin-top:32px;border:1px solid var(--border);border-radius:14px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden;font-size:14px}
+.debug summary{padding:14px 20px;cursor:pointer;font-weight:650;color:var(--text);list-style:none}
+.debug summary::-webkit-details-marker{display:none}
+.debug-body{padding:0 20px 20px;color:var(--muted);line-height:1.7}
+.debug-row{display:flex;justify-content:space-between;gap:16px;padding:6px 0;border-bottom:1px dashed var(--border)}
+.debug-row:last-child{border-bottom:none}
+.debug-row strong{color:var(--text);font-weight:650}
+.debug-list{margin:8px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.debug-list li{background:var(--surface-2);border-radius:6px;padding:3px 8px;font-size:12.5px;font-family:ui-monospace,monospace}
+.token-form{margin:16px 0 8px;padding:16px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2)}
+.token-form label{display:block;font-weight:650;color:var(--text);margin-bottom:6px;font-size:13px}
+.token-row{display:flex;gap:8px;flex-wrap:wrap}
+.token-row input{flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:13px ui-monospace,monospace}
+.token-status{margin-top:10px;font-size:13px}
+.token-status.ok{color:#1a7f37}
+.token-status.err{color:#c0392b}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.hidden{display:none !important}
+@media(max-width:720px){:root{--content-pad:20px}.grid,.skeleton-grid{grid-template-columns:1fr}.card{padding:20px}.search{flex-basis:100%}.count{width:100%;text-align:center;margin-left:0}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}.card:hover{transform:none}body::before,body::after{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <nav class="top" aria-label="Навигация">
+    <a class="brand" href="./"><strong>${userEsc}</strong><span>projects</span></a>
+    <div class="nav-actions">
+      <button class="season-toggle button" id="season-toggle" type="button" style="display:none"></button>
+      <a class="button" href="https://github.com/${userEsc}" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+    </div>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <div class="eyebrow">Открытые проекты</div>
+    <h1>${titleEsc}<br><span>${userEsc}</span></h1>
+    <p class="intro">${descEsc}</p>
+    ${showStats ? `<div class="stats" id="stats">
+      <div class="stat"><span class="stat-value" id="stat-repos">—</span><span class="stat-label">Проектов</span></div>
+      <div class="stat"><span class="stat-value" id="stat-stars">—</span><span class="stat-label">Звёзд</span></div>
+      <div class="stat"><span class="stat-value" id="stat-langs">—</span><span class="stat-label">Языков</span></div>
+    </div>` : ''}
+  </section>
+  <section aria-label="Каталог проектов">
+    <div class="controls">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        <label class="sr-only" for="search">Поиск</label>
+        <input id="search" type="search" placeholder="Найти проект…" autocomplete="off">
+      </div>
+      ${showSort ? `<select id="sort" aria-label="Сортировка">
+        <option value="updated">По обновлению</option>
+        <option value="created">По дате создания</option>
+        <option value="name-asc">По алфавиту (А→Я)</option>
+        <option value="name-desc">По алфавиту (Я→А)</option>
+      </select>` : ''}
+      <div id="count" class="count" aria-live="polite"></div>
+    </div>
+    <div id="status" class="hidden"></div>
+    <div id="skeleton" class="skeleton-grid">
+      <div class="skeleton-card"><div class="skeleton-line title"></div><div class="skeleton-line text"></div><div class="skeleton-line text-2"></div><div class="skeleton-line meta"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line title"></div><div class="skeleton-line text"></div><div class="skeleton-line text-2"></div><div class="skeleton-line meta"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line title"></div><div class="skeleton-line text"></div><div class="skeleton-line text-2"></div><div class="skeleton-line meta"></div></div>
+    </div>
+    <div id="projects" class="grid"></div>
+  </section>
+  ${showDebug ? `<details class="debug" id="debug">
+    <summary>Диагностика</summary>
+    <div class="debug-body" id="debug-body">Загрузка…</div>
+  </details>` : ''}
+</main>
+<footer><p>${userEsc} · Данные из публичных репозиториев GitHub.</p></footer>
+<script>
+'use strict';
+const USER='${escapeJs(user)}';
+const grid=document.querySelector('#projects');
+const statusBox=document.querySelector('#status');
+const skeleton=document.querySelector('#skeleton');
+const count=document.querySelector('#count');
+const search=document.querySelector('#search');
+const sortSelect=document.querySelector('#sort');
+${showStats ? `const statRepos=document.querySelector('#stat-repos');
+const statStars=document.querySelector('#stat-stars');
+const statLangs=document.querySelector('#stat-langs');` : ''}
+${showDebug ? `const debugBody=document.querySelector('#debug-body');` : ''}
+let repos=[];
+const CACHE_TTL_MS=${cacheMs};
+const CACHE_PREFIX='gh-cache:';
+const TOKEN_KEY='gh-token';
+const SORT_KEY='gh-sort';
+const SEASON_KEY='gh-season';
+const HALLOWEEN_START=new Date('2026-10-03T00:00:00');
+const HALLOWEEN_END=new Date('2026-11-01T23:59:59');
+const WINTER_START=new Date('2026-12-01T00:00:00');
+const WINTER_END=new Date('2027-02-01T23:59:59');
+const ENABLE_HALLOWEEN=${enableHalloween};
+const ENABLE_WINTER=${enableWinter};
+function inRange(now,s,e){return now>=s&&now<=e}
+function currentSeason(now=new Date()){
+  if(ENABLE_HALLOWEEN&&inRange(now,HALLOWEEN_START,HALLOWEEN_END))return 'halloween';
+  if(ENABLE_WINTER&&inRange(now,WINTER_START,WINTER_END))return 'winter';
+  return null;
+}
+function getToken(){try{return localStorage.getItem(TOKEN_KEY)||''}catch{return ''}}
+function setToken(v){try{v?localStorage.setItem(TOKEN_KEY,v):localStorage.removeItem(TOKEN_KEY)}catch{}}
+function authHeaders(){const t=getToken();const h={Accept:'application/vnd.github+json'};if(t)h.Authorization='Bearer '+t;return h}
+function cacheGet(k){try{const raw=localStorage.getItem(CACHE_PREFIX+k);if(!raw)return null;const p=JSON.parse(raw);if(Date.now()-p.t>CACHE_TTL_MS){localStorage.removeItem(CACHE_PREFIX+k);return null}return p.v}catch{return null}}
+function cacheSet(k,v){try{localStorage.setItem(CACHE_PREFIX+k,JSON.stringify({t:Date.now(),v}))}catch{}}
+function cacheClear(){try{const ks=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(CACHE_PREFIX))ks.push(k)}ks.forEach(k=>localStorage.removeItem(k))}catch{}}
+function element(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x)n.textContent=x;return n}
+function safeUrl(v){try{const u=new URL(v);return['https:','http:'].includes(u.protocol)?u.href:null}catch{return null}}
+function svgIcon(paths,viewBox='0 0 24 24'){const ns='http://www.w3.org/2000/svg';const s=document.createElementNS(ns,'svg');s.setAttribute('viewBox',viewBox);s.setAttribute('fill','none');s.setAttribute('stroke','currentColor');s.setAttribute('stroke-width','2');s.setAttribute('stroke-linecap','round');s.setAttribute('stroke-linejoin','round');for(const d of paths){const p=document.createElementNS(ns,'path');p.setAttribute('d',d);s.append(p)}return s}
+function link(t,u,p=false,ip=null){const a=element('a','button'+(p?' primary':''),t);a.href=u;a.target='_blank';a.rel='noopener noreferrer';if(ip)a.prepend(svgIcon(ip));return a}
+function fmtDate(iso){if(!iso)return '—';try{return new Date(iso).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'})}catch{return '—'}}
+async function api(path,{useCache=true}={}){
+  if(useCache){const c=cacheGet(path);if(c)return c}
+  const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),15000);
+  try{
+    const r=await fetch('https://api.github.com'+path,{headers:authHeaders(),signal:ctrl.signal});
+    if(!r.ok){const e=new Error('GitHub: '+r.status);e.status=r.status;throw e}
+    const d=await r.json();if(useCache)cacheSet(path,d);return d;
+  }finally{clearTimeout(timer)}
+}
+const LANG_COLORS={JavaScript:'#f1e05a',TypeScript:'#3178c6',Python:'#3572A5',HTML:'#e34c26',CSS:'#563d7c',Java:'#b07219','C++':'#f34b7d','C#':'#178600',C:'#555555',Go:'#00ADD8',Rust:'#dea584',Ruby:'#701516',PHP:'#4F5D95',Swift:'#F05138',Kotlin:'#A97BFF',Shell:'#89e051',Vue:'#41b883',Svelte:'#ff3e00',Dart:'#00B4AB'};
+function langColor(l){return !l?'var(--muted)':LANG_COLORS[l]||'#8b8b8b'}
+function notice(t,b,r=false){statusBox.replaceChildren(element('h2','',t),element('p','',b));statusBox.classList.remove('hidden');if(r){const btn=element('button','button','Повторить');btn.type='button';btn.onclick=load;statusBox.append(btn)}}
+function hideStatus(){statusBox.classList.add('hidden');statusBox.replaceChildren()}
+function showSkeleton(){skeleton.classList.remove('hidden')}
+function hideSkeleton(){skeleton.classList.add('hidden')}
+function siteFor(r){const c=safeUrl(r.homepage);if(c)return c;if(!r.has_pages)return null;return 'https://'+r.owner.login+'.github.io/'+(r.name.toLowerCase()===r.owner.login.toLowerCase()+'.github.io'?'':encodeURIComponent(r.name)+'/')}
+function applySort(list,m){const a=list.slice();switch(m){case 'name-asc':a.sort((x,y)=>x.name.localeCompare(y.name,'ru'));break;case 'name-desc':a.sort((x,y)=>y.name.localeCompare(x.name,'ru'));break;case 'created':a.sort((x,y)=>Date.parse(y.created_at)-Date.parse(x.created_at));break;default:a.sort((x,y)=>Date.parse(y.pushed_at)-Date.parse(x.pushed_at))}return a}
+function render(){
+  grid.replaceChildren();
+  const q=search.value.trim().toLowerCase();
+  const m=sortSelect?sortSelect.value:'updated';
+  const filtered=applySort(repos.filter(r=>[r.name,r.description,r.language,...(r.topics||[])].filter(Boolean).join(' ').toLowerCase().includes(q)),m);
+  count.textContent=filtered.length+' из '+repos.length;
+  if(!filtered.length){hideSkeleton();notice(repos.length?'Ничего не найдено':'Пока нет публичных проектов',repos.length?'Попробуйте другое слово.':'Репозитории появятся здесь.');return}
+  hideStatus();
+  filtered.forEach((r,i)=>{
+    const c=element('article','card');c.style.animationDelay=Math.min(i*40,400)+'ms';
+    c.append(element('h2','',r.name),element('p','description',r.description||'Описание пока не добавлено.'));
+    const d=element('div','dates');
+    const cr=element('span');cr.append(svgIcon(['M8 2v4','M16 2v4','M3 10h18','M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z']),document.createTextNode('создан: '+fmtDate(r.created_at)));
+    const up=element('span');up.append(svgIcon(['M12 8v4l3 2','M3.05 11a9 9 0 1 1 .5 4','M3 4v4h4']),document.createTextNode('обновлён: '+fmtDate(r.pushed_at)));
+    d.append(cr,up);c.append(d);
+    const meta=element('div','meta');
+    if(r.language){const s=element('span');const dot=element('span','lang-dot');dot.style.background=langColor(r.language);s.append(dot,r.language);meta.append(s)}
+    meta.append(element('span','','★ '+r.stargazers_count));
+    if(r.archived)meta.append(element('span','','📦 Архив'));
+    if(r.fork)meta.append(element('span','','⑂ Форк'));
+    c.append(meta);
+    const a=element('div','actions');
+    const site=siteFor(r);if(site)a.append(link('Открыть сайт',site,true));
+    a.append(link('Репозиторий',r.html_url));
+    ${showDownload ? `a.append(link('Скачать код','https://github.com/'+encodeURIComponent(r.owner.login)+'/'+encodeURIComponent(r.name)+'/archive/refs/heads/'+encodeURIComponent(r.default_branch)+'.zip'));` : ''}
+    ${showReleases ? `const rb=element('div','release-area');const btn=element('button','button','Файлы релизов');btn.type='button';btn.onclick=async()=>{
+      if(btn.dataset.loaded){rb.classList.toggle('hidden');return}
+      btn.disabled=true;rb.classList.remove('hidden');rb.textContent='Проверяем релиз…';
+      try{
+        const rel=await api('/repos/'+encodeURIComponent(r.owner.login)+'/'+encodeURIComponent(r.name)+'/releases/latest');
+        rb.replaceChildren(element('div','',rel.name||rel.tag_name));
+        const assets=(rel.assets||[]).filter(x=>safeUrl(x.browser_download_url));
+        if(assets.length){for(const x of assets){const u=safeUrl(x.browser_download_url);const al=element('a');al.textContent=x.name+(x.size?' · '+(x.size/1024/1024).toFixed(1)+' МБ':'')+' ↓';al.href=u;al.target='_blank';al.rel='noopener noreferrer';rb.append(al)}}
+        else rb.append(element('p','','В релизе нет готовых файлов.'));
+        const all=element('a','','Все релизы ↗');all.href=r.html_url+'/releases';all.target='_blank';rb.append(all);
+        btn.dataset.loaded='1';
+      }catch(e){rb.textContent=e.status===404?'Публичных релизов нет.':'Не удалось проверить релизы.'}
+      finally{btn.disabled=false}
+    };a.append(btn);c.append(a,rb);grid.append(c);return;` : ''}
+    c.append(a);grid.append(c);
+  });
+}
+${showStats ? `function updateStats(){statRepos.textContent=repos.length||'—';statStars.textContent=repos.reduce((s,r)=>s+(r.stargazers_count||0),0)||'—';statLangs.textContent=new Set(repos.map(r=>r.language).filter(Boolean)).size||'—'}` : ''}
+${showDebug ? `function renderDebug(info){debugBody.replaceChildren();const rows=[];function row(l,v){const r=element('div','debug-row');r.append(element('span','',l),element('strong','',String(v)));rows.push(r)}row('Пользователь',USER);row('Всего с API',info.total);row('Показано',repos.length);row('Страниц',info.pages);row('Токен',getToken()?'есть':'нет');if(info.missing&&info.missing.length){const m=element('div','debug-row');m.append(element('span','','Не найдены: '+info.missing.join(', ')));rows.push(m)}rows.forEach(r=>debugBody.append(r));const form=element('div','token-form');form.append(element('label','','Токен GitHub (опционально)'));const tr=element('div','token-row');const inp=element('input');inp.type='password';inp.placeholder='ghp_… или github_pat_…';inp.value=getToken();const sv=element('button','button','Сохранить');sv.type='button';sv.onclick=()=>{setToken(inp.value.trim());cacheClear();load()};const cl=element('button','button','Удалить');cl.type='button';cl.onclick=()=>{setToken('');inp.value='';cacheClear();load()};tr.append(inp,sv,cl);form.append(tr);debugBody.prepend(form)}` : ''}
+async function load(){
+  grid.replaceChildren();hideStatus();count.textContent='';showSkeleton();
+  ${showStats ? `statRepos.textContent='…';statStars.textContent='…';statLangs.textContent='…';` : ''}
+  ${showDebug ? `debugBody.textContent='Загрузка…';` : ''}
+  try{
+    const all=[];let pages=0;
+    for(let p=1;;p++){const b=await api('/users/'+USER+'/repos?type=owner&sort=updated&per_page=100&page='+p);all.push(...b);pages=p;if(b.length<100)break}
+    repos=all;hideSkeleton();
+    ${showStats ? `updateStats();` : ''}
+    render();
+    ${showDebug ? `renderDebug({total:all.length,pages,missing:[]});` : ''}
+  }catch(e){
+    hideSkeleton();
+    ${showDebug ? `renderDebug({total:0,pages:0,missing:[]});` : ''}
+    notice('Не удалось загрузить проекты',
+      e.status===403||e.status===429?'Лимит GitHub API исчерпан. Добавьте токен в панели диагностики.':e.status===404?'Профиль не найден.':'Проверьте интернет.',true);
+  }
+}
+function applySeason(){
+  const html=document.documentElement;
+  const season=currentSeason();
+  let pref=null;try{pref=localStorage.getItem(SEASON_KEY)}catch{}
+  const on=!!season&&pref!=='0';
+  html.classList.toggle('halloween',on&&season==='halloween');
+  html.classList.toggle('winter',on&&season==='winter');
+  const btn=document.querySelector('#season-toggle');
+  if(btn&&season){btn.style.display='';if(on){btn.textContent='🚫 Обычный вид'}else{btn.textContent=season==='halloween'?'🎃 Хэллоуин':'❄ Зима'}}
+}
+(function(){
+  const btn=document.querySelector('#season-toggle');
+  if(btn)btn.addEventListener('click',()=>{try{const cur=localStorage.getItem(SEASON_KEY);localStorage.setItem(SEASON_KEY,cur==='0'?'1':'0')}catch{};applySeason()});
+})();
+document.addEventListener('DOMContentLoaded',()=>{
+  applySeason();
+  if(search)search.addEventListener('input',render);
+  if(sortSelect)sortSelect.addEventListener('change',()=>{try{localStorage.setItem(SORT_KEY,sortSelect.value)}catch{};render()});
+  try{const s=localStorage.getItem(SORT_KEY);if(s&&sortSelect&&['updated','created','name-asc','name-desc'].includes(s))sortSelect.value=s}catch{}
+  load();
+});
+<\/script>
+</body>
+</html>`;
+}
+
+/* ============ ПРЕВЬЮ ============ */
+let rebuildTimer=null;
+function rebuildPreview(){
+  clearTimeout(rebuildTimer);
+  rebuildTimer=setTimeout(()=>{
+    const html=buildHtml();
+    preview.srcdoc=html;
+  },250);
+}
+Object.values(fields).forEach(el=>{
+  if(el) el.addEventListener('input',rebuildPreview);
+});
+
+/* ============ ДЕЙСТВИЯ ============ */
+btnDownload.addEventListener('click',()=>{
+  const blob=new Blob([buildHtml()],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='index.html';
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+
+btnCopy.addEventListener('click',async()=>{
+  const html=buildHtml();
+  try{
+    await navigator.clipboard.writeText(html);
+    setStatus(I18N[currentLang]['status.copied'],true);
+  }catch{
+    try{
+      const ta=document.createElement('textarea');
+      ta.value=html;
+      ta.style.position='fixed';
+      ta.style.opacity='0';
+      document.body.append(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      setStatus(I18N[currentLang]['status.copied'],true);
+    }catch{
+      setStatus(I18N[currentLang]['status.copyErr'],false);
+    }
+  }
+  setTimeout(()=>{statusBox.textContent='';statusBox.className='status'},3000);
+});
+
+btnReset.addEventListener('click',()=>{
+  fields.user.value='octocat';
+  fields.title.value=currentLang==='en'?'Projects':'Проекты';
+  fields.desc.value=currentLang==='en'
+    ?'Open the project site, browse the code or download sources and release files — all in one place.'
+    :'Откройте сайт проекта, загляните в код или скачайте исходники и файлы релизов — всё собрано на одной странице.';
+  fields.cache.value=10;
+  ['stats','sort','download','releases','debug','halloween','winter'].forEach(k=>{
+    if(fields[k]) fields[k].checked=true;
+  });
+  setStatus(I18N[currentLang]['status.reset'],true);
+  setTimeout(()=>{statusBox.textContent='';statusBox.className='status'},2000);
+  rebuildPreview();
+});
+
+/* ============ СМЕНА ЯЗЫКА ============ */
+document.querySelectorAll('.lang-switch button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    applyLang(btn.dataset.lang);
+  });
+});
+
+/* ============ СТАРТ ============ */
+applyLang(currentLang);
+rebuildPreview();
+</script>
+</body>
+</html>
