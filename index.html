@@ -202,6 +202,14 @@ h1 span{
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .intro{font-size:18px;color:var(--muted);max-width:640px;margin:0 0 24px;line-height:1.6}
+.intro code{
+  background:var(--surface-2);
+  padding:2px 6px;
+  border-radius:5px;
+  font-size:.92em;
+  color:var(--text);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
 .hero-links{display:flex;gap:10px;flex-wrap:wrap}
 
 /* ---------- TUTORIAL ---------- */
@@ -250,11 +258,13 @@ h1 span{
   font-weight:750;font-size:14px;
 }
 .steps li strong{display:block;margin-bottom:4px;color:var(--text);font-weight:700}
-.steps li code{
+.steps li code,
+.callout code{
   background:var(--surface-2);
   padding:2px 6px;border-radius:5px;
   font-size:12.5px;
   overflow-wrap:anywhere;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 .callout{
   margin-top:20px;
@@ -302,6 +312,12 @@ h1 span{
 .field .sub{
   display:block;font-size:12px;color:var(--muted);
   font-weight:400;margin-top:4px;line-height:1.4;
+}
+.field .sub code{
+  background:var(--surface-2);
+  padding:1px 5px;border-radius:4px;
+  font-size:12px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 input[type=text],input[type=url],input[type=number],textarea,select{
   width:100%;min-height:44px;
@@ -487,46 +503,42 @@ select{
   <section class="hero">
     <div class="eyebrow" data-i18n="hero.eyebrow">Конструктор</div>
     <h1 data-i18n-html="hero.title">Сайт-каталог<br>ваших <span>проектов</span></h1>
-    <p class="intro" data-i18n="hero.intro">Введите логин GitHub, настройте опции и скачайте готовый index.html. Положите его в репозиторий &lt;логин&gt;.github.io — сайт откроется по адресу https://&lt;логин&gt;.github.io/.</p>
+    <p class="intro" data-i18n-html="hero.intro"></p>
     <div class="hero-links">
       <a class="button primary" href="#tutorial" data-i18n="hero.cta">Как развернуть ↓</a>
       <a class="button" href="#settings" data-i18n="hero.cta2">Настроить ↓</a>
     </div>
   </section>
 
-  <!-- ТУТОРИАЛ -->
   <section class="tutorial" id="tutorial" aria-label="Инструкция">
     <h2 data-i18n="tut.title">Как развернуть за 5 шагов</h2>
     <p class="lead" data-i18n="tut.lead">Ничего устанавливать не нужно. Только браузер, аккаунт GitHub и 5 минут времени.</p>
     <ol class="steps">
       <li>
         <strong data-i18n="tut.s1.t">Сгенерируйте файл</strong>
-        <span data-i18n="tut.s1.d">Заполните форму ниже, нажмите «Скачать index.html». Файл сохранится на компьютере.</span>
+        <span data-i18n-html="tut.s1.d">Заполните форму ниже, нажмите «Скачать index.html».</span>
       </li>
       <li>
         <strong data-i18n="tut.s2.t">Создайте репозиторий</strong>
-        <span data-i18n="tut.s2.d">На GitHub создайте публичный репозиторий с именем &lt;ваш-логин&gt;.github.io. Например, для octocat это octocat.github.io.</span>
+        <span data-i18n-html="tut.s2.d">На GitHub создайте публичный репозиторий с именем <code>&lt;ваш-логин&gt;.github.io</code>.</span>
       </li>
       <li>
         <strong data-i18n="tut.s3.t">Загрузите файл</strong>
-        <span data-i18n="tut.s3.d">В пустом репозитории нажмите «creating a new file», назовите его index.html и вставьте содержимое скачанного файла. Commit changes.</span>
+        <span data-i18n-html="tut.s3.d">В пустом репозитории нажмите «creating a new file», назовите его <code>index.html</code> и вставьте содержимое. Commit changes.</span>
       </li>
       <li>
         <strong data-i18n="tut.s4.t">Включите Pages</strong>
-        <span data-i18n="tut.s4.d">Settings → Pages. Source: Deploy from a branch. Branch: main, папка / (root). Save.</span>
+        <span data-i18n-html="tut.s4.d">Settings → Pages. Source: Deploy from a branch. Branch: main, папка / (root). Save.</span>
       </li>
       <li>
         <strong data-i18n="tut.s5.t">Откройте сайт</strong>
-        <span data-i18n="tut.s5.d">Через 1–3 минуты сайт заработает по адресу https://&lt;ваш-логин&gt;.github.io/</span>
+        <span data-i18n-html="tut.s5.d">Через 1–3 минуты сайт заработает по адресу <code>https://&lt;ваш-логин&gt;.github.io/</code></span>
       </li>
     </ol>
-    <div class="callout" data-i18n-html="tut.callout">
-      <strong>Важно:</strong> репозиторий должен называться именно <code>&lt;логин&gt;.github.io</code>, иначе сайт откроется по адресу <code>&lt;логин&gt;.github.io/&lt;имя-репозитория&gt;/</code>.
-    </div>
+    <div class="callout" data-i18n-html="tut.callout"></div>
   </section>
 
   <div class="layout" id="settings">
-    <!-- НАСТРОЙКИ -->
     <section class="panel" aria-label="Настройки генератора">
       <h2 data-i18n="set.title">Настройки</h2>
       <p class="hint" data-i18n="set.hint">Все поля можно менять — превью справа обновится автоматически.</p>
@@ -581,7 +593,6 @@ select{
       <div class="status" id="status" aria-live="polite"></div>
     </section>
 
-    <!-- ПРЕВЬЮ -->
     <section class="panel preview" aria-label="Предпросмотр">
       <div class="preview-head">
         <h2 data-i18n="prev.title">Предпросмотр</h2>
@@ -606,21 +617,21 @@ const I18N = {
     'brand.tag': 'генератор',
     'hero.eyebrow': 'Конструктор',
     'hero.title': 'Сайт-каталог<br>ваших <span>проектов</span>',
-    'hero.intro': 'Введите логин GitHub, настройте опции и скачайте готовый index.html. Положите его в репозиторий &lt;логин&gt;.github.io — сайт откроется по адресу https://&lt;логин&gt;.github.io/.',
+    'hero.intro': 'Введите логин GitHub, настройте опции и скачайте готовый <code>index.html</code>. Положите его в репозиторий <code>&lt;логин&gt;.github.io</code> — сайт откроется по адресу <code>https://&lt;логин&gt;.github.io/</code>.',
     'hero.cta': 'Как развернуть ↓',
     'hero.cta2': 'Настроить ↓',
     'tut.title': 'Как развернуть за 5 шагов',
     'tut.lead': 'Ничего устанавливать не нужно. Только браузер, аккаунт GitHub и 5 минут времени.',
     'tut.s1.t': 'Сгенерируйте файл',
-    'tut.s1.d': 'Заполните форму ниже, нажмите «Скачать index.html». Файл сохранится на компьютере.',
+    'tut.s1.d': 'Заполните форму ниже, нажмите «Скачать <code>index.html</code>». Файл сохранится на компьютере.',
     'tut.s2.t': 'Создайте репозиторий',
-    'tut.s2.d': 'На GitHub создайте публичный репозиторий с именем &lt;ваш-логин&gt;.github.io. Например, для octocat это octocat.github.io.',
+    'tut.s2.d': 'На GitHub создайте публичный репозиторий с именем <code>&lt;ваш-логин&gt;.github.io</code>. Например, для octocat это <code>octocat.github.io</code>.',
     'tut.s3.t': 'Загрузите файл',
-    'tut.s3.d': 'В пустом репозитории нажмите «creating a new file», назовите его index.html и вставьте содержимое скачанного файла. Commit changes.',
+    'tut.s3.d': 'В пустом репозитории нажмите «creating a new file», назовите его <code>index.html</code> и вставьте содержимое скачанного файла. Commit changes.',
     'tut.s4.t': 'Включите Pages',
-    'tut.s4.d': 'Settings → Pages. Source: Deploy from a branch. Branch: main, папка / (root). Save.',
+    'tut.s4.d': 'Settings → Pages. Source: <code>Deploy from a branch</code>. Branch: <code>main</code>, папка <code>/ (root)</code>. Save.',
     'tut.s5.t': 'Откройте сайт',
-    'tut.s5.d': 'Через 1–3 минуты сайт заработает по адресу https://&lt;ваш-логин&gt;.github.io/',
+    'tut.s5.d': 'Через 1–3 минуты сайт заработает по адресу <code>https://&lt;ваш-логин&gt;.github.io/</code>',
     'tut.callout': '<strong>Важно:</strong> репозиторий должен называться именно <code>&lt;логин&gt;.github.io</code>, иначе сайт откроется по адресу <code>&lt;логин&gt;.github.io/&lt;имя-репозитория&gt;/</code>.',
     'set.title': 'Настройки',
     'set.hint': 'Все поля можно менять — превью справа обновится автоматически.',
@@ -662,21 +673,21 @@ const I18N = {
     'brand.tag': 'generator',
     'hero.eyebrow': 'Builder',
     'hero.title': 'A catalog site<br>for your <span>projects</span>',
-    'hero.intro': 'Enter your GitHub username, tweak the options and download the ready index.html. Drop it into a <username>.github.io repository — the site opens at https://<username>.github.io/.',
+    'hero.intro': 'Enter your GitHub username, tweak the options and download the ready <code>index.html</code>. Drop it into a <code>&lt;username&gt;.github.io</code> repository — the site opens at <code>https://&lt;username&gt;.github.io/</code>.',
     'hero.cta': 'How to deploy ↓',
     'hero.cta2': 'Configure ↓',
     'tut.title': 'Deploy in 5 steps',
     'tut.lead': 'Nothing to install. Just a browser, a GitHub account and 5 minutes.',
     'tut.s1.t': 'Generate the file',
-    'tut.s1.d': 'Fill in the form below and click “Download index.html”. The file saves to your computer.',
+    'tut.s1.d': 'Fill in the form below and click “Download <code>index.html</code>”. The file saves to your computer.',
     'tut.s2.t': 'Create a repository',
-    'tut.s2.d': 'On GitHub create a public repository named <your-username>.github.io. For octocat that is octocat.github.io.',
+    'tut.s2.d': 'On GitHub create a public repository named <code>&lt;your-username&gt;.github.io</code>. For octocat that is <code>octocat.github.io</code>.',
     'tut.s3.t': 'Upload the file',
-    'tut.s3.d': 'In the empty repository click “creating a new file”, name it index.html and paste the contents. Commit changes.',
+    'tut.s3.d': 'In the empty repository click “creating a new file”, name it <code>index.html</code> and paste the contents. Commit changes.',
     'tut.s4.t': 'Enable Pages',
-    'tut.s4.d': 'Settings → Pages. Source: Deploy from a branch. Branch: main, folder / (root). Save.',
+    'tut.s4.d': 'Settings → Pages. Source: <code>Deploy from a branch</code>. Branch: <code>main</code>, folder <code>/ (root)</code>. Save.',
     'tut.s5.t': 'Open the site',
-    'tut.s5.d': 'In 1–3 minutes the site is live at https://<your-username>.github.io/',
+    'tut.s5.d': 'In 1–3 minutes the site is live at <code>https://&lt;your-username&gt;.github.io/</code>',
     'tut.callout': '<strong>Important:</strong> the repository must be named exactly <code>&lt;username&gt;.github.io</code>, otherwise the site opens at <code>&lt;username&gt;.github.io/&lt;repo-name&gt;/</code>.',
     'set.title': 'Settings',
     'set.hint': 'Every field is live — the preview on the right updates automatically.',
@@ -743,7 +754,6 @@ function applyLang(lang){
   });
 
   try{ localStorage.setItem('cl-lang', currentLang); }catch{}
-  // Обновляем предпросмотр, чтобы он тоже был на нужном языке
   rebuildPreview();
 }
 
@@ -823,22 +833,8 @@ function buildHtml(){
 <meta name="description" content="${descEsc}">
 <title>${titleEsc} — ${userEsc}</title>
 <style>
-:root{
-  color-scheme:light dark;
-  --bg:#ffffff;--surface:#faf9f8;--surface-2:#f3f2f0;
-  --text:#1f1e1d;--muted:#6b6864;--border:#e8e6e3;
-  --accent:#1766ad;--accent-2:#7c3aed;--soft:#e8f2fc;
-  --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px -12px rgba(0,0,0,.12);
-  --shadow-hover:0 2px 4px rgba(0,0,0,.05),0 16px 40px -16px rgba(0,0,0,.18);
-  --radius:16px;--content-max:1160px;--content-pad:32px;
-}
-@media(prefers-color-scheme:dark){:root{
-  --bg:#141414;--surface:#1c1c1c;--surface-2:#242424;
-  --text:#f5f5f4;--muted:#a8a5a0;--border:#2e2e2c;
-  --accent:#8ab8f0;--accent-2:#b794f6;--soft:#1e2d3d;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.5);
-  --shadow-hover:0 2px 4px rgba(0,0,0,.4),0 16px 40px -16px rgba(0,0,0,.7);
-}}
+:root{color-scheme:light dark;--bg:#ffffff;--surface:#faf9f8;--surface-2:#f3f2f0;--text:#1f1e1d;--muted:#6b6864;--border:#e8e6e3;--accent:#1766ad;--accent-2:#7c3aed;--soft:#e8f2fc;--shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px -12px rgba(0,0,0,.12);--shadow-hover:0 2px 4px rgba(0,0,0,.05),0 16px 40px -16px rgba(0,0,0,.18);--radius:16px;--content-max:1160px;--content-pad:32px}
+@media(prefers-color-scheme:dark){:root{--bg:#141414;--surface:#1c1c1c;--surface-2:#242424;--text:#f5f5f4;--muted:#a8a5a0;--border:#2e2e2c;--accent:#8ab8f0;--accent-2:#b794f6;--soft:#1e2d3d;--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.5);--shadow-hover:0 2px 4px rgba(0,0,0,.4),0 16px 40px -16px rgba(0,0,0,.7)}}
 html.halloween{--bg:#fff8ee;--surface:#fffaf2;--surface-2:#fdeedd;--text:#2a1a0a;--muted:#7a5a3a;--border:#f0ddc4;--accent:#d2691e;--accent-2:#6b2d8f;--soft:#fde6cf}
 @media(prefers-color-scheme:dark){html.halloween{--bg:#130a1c;--surface:#1b1026;--surface-2:#241432;--text:#f6ecff;--muted:#b39ccb;--border:#33204a;--accent:#ff9a3c;--accent-2:#c58bff;--soft:#2a1440}}
 html.winter{--bg:#f2f8ff;--surface:#ffffff;--surface-2:#e6f0fb;--text:#0f1b2d;--muted:#5a6b82;--border:#d6e4f5;--accent:#1e6fd9;--accent-2:#7c4dff;--soft:#dceafb}
@@ -1090,7 +1086,7 @@ function render(){
   });
 }
 ${showStats ? `function updateStats(){statRepos.textContent=repos.length||'—';statStars.textContent=repos.reduce((s,r)=>s+(r.stargazers_count||0),0)||'—';statLangs.textContent=new Set(repos.map(r=>r.language).filter(Boolean)).size||'—'}` : ''}
-${showDebug ? `function renderDebug(info){debugBody.replaceChildren();const rows=[];function row(l,v){const r=element('div','debug-row');r.append(element('span','',l),element('strong','',String(v)));rows.push(r)}row('Пользователь',USER);row('Всего с API',info.total);row('Показано',repos.length);row('Страниц',info.pages);row('Токен',getToken()?'есть':'нет');if(info.missing&&info.missing.length){const m=element('div','debug-row');m.append(element('span','','Не найдены: '+info.missing.join(', ')));rows.push(m)}rows.forEach(r=>debugBody.append(r));const form=element('div','token-form');form.append(element('label','','Токен GitHub (опционально)'));const tr=element('div','token-row');const inp=element('input');inp.type='password';inp.placeholder='ghp_… или github_pat_…';inp.value=getToken();const sv=element('button','button','Сохранить');sv.type='button';sv.onclick=()=>{setToken(inp.value.trim());cacheClear();load()};const cl=element('button','button','Удалить');cl.type='button';cl.onclick=()=>{setToken('');inp.value='';cacheClear();load()};tr.append(inp,sv,cl);form.append(tr);debugBody.prepend(form)}` : ''}
+${showDebug ? `function renderDebug(info){debugBody.replaceChildren();const rows=[];function row(l,v){const r=element('div','debug-row');r.append(element('span','',l),element('strong','',String(v)));rows.push(r)}row('Пользователь',USER);row('Всего с API',info.total);row('Показано',repos.length);row('Страниц',info.pages);row('Токен',getToken()?'есть':'нет');rows.forEach(r=>debugBody.append(r));const form=element('div','token-form');form.append(element('label','','Токен GitHub (опционально)'));const tr=element('div','token-row');const inp=element('input');inp.type='password';inp.placeholder='ghp_… или github_pat_…';inp.value=getToken();const sv=element('button','button','Сохранить');sv.type='button';sv.onclick=()=>{setToken(inp.value.trim());cacheClear();load()};const cl=element('button','button','Удалить');cl.type='button';cl.onclick=()=>{setToken('');inp.value='';cacheClear();load()};tr.append(inp,sv,cl);form.append(tr);debugBody.prepend(form)}` : ''}
 async function load(){
   grid.replaceChildren();hideStatus();count.textContent='';showSkeleton();
   ${showStats ? `statRepos.textContent='…';statStars.textContent='…';statLangs.textContent='…';` : ''}
@@ -1140,8 +1136,7 @@ let rebuildTimer=null;
 function rebuildPreview(){
   clearTimeout(rebuildTimer);
   rebuildTimer=setTimeout(()=>{
-    const html=buildHtml();
-    preview.srcdoc=html;
+    preview.srcdoc=buildHtml();
   },250);
 }
 Object.values(fields).forEach(el=>{
